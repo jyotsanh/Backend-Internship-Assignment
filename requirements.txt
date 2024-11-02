@@ -5,7 +5,6 @@ PyMuPDF
 SQLAlchemy 
 psycopg2-binary
 pymysql
-mysqlclient
 websockets 
 langchain
 python-multipart
