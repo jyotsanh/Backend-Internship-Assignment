@@ -1,0 +1,14 @@
+python-dotenv
+fastapi 
+uvicorn 
+PyMuPDF 
+SQLAlchemy 
+psycopg2
+pymysql
+mysqlclient
+websockets 
+langchain
+python-multipart
+pytest 
+httpx
+pytest-asyncio
