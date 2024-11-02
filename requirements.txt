@@ -3,7 +3,7 @@ fastapi
 uvicorn 
 PyMuPDF 
 SQLAlchemy 
-psycopg2
+psycopg2-binary
 pymysql
 mysqlclient
 websockets 
