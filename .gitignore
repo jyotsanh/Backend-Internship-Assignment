@@ -54,7 +54,7 @@ cover/
 # Translations
 *.mo
 *.pot
-
+/Test_Data_Base.db
 # Django stuff:
 *.log
 local_settings.py
