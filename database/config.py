@@ -26,7 +26,7 @@ except Exception as e:
     print(f"Failed to connect to {DATABASE_URL}: {str(e)}")
     print("Falling back to local SQLite database")
     # Fall back to local SQLite database
-    DATABASE_URL = "sqlite:///./pdf_documents.db"
+    DATABASE_URL = "sqlite:///./Test_DB.db"
     engine = create_engine(DATABASE_URL)
 
 # Create the session maker

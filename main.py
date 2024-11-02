@@ -3,15 +3,29 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 import fitz  # PyMuPDF for PDF text extraction
 from pathlib import Path
-from database.config import SessionLocal
-from database.models import PDFDocument
 import os
 
+
+# Local imports
+from database.config import SessionLocal
+from database.models import PDFDocument
+
+from websocket.question_answer import router as ws_router
+
 app = FastAPI()
+
+# Include the WebSocket router
+app.include_router(ws_router)
 
 # Directory to save uploaded PDFs
 UPLOAD_DIRECTORY = "pdf_uploads"
 Path(UPLOAD_DIRECTORY).mkdir(exist_ok=True)
+
+
+def get_current_user_id():
+    # This should be replaced with actual logic to retrieve the authenticated user's ID.
+    # e.g., by extracting from an auth token in real scenarios.
+    return 1
 
 # Dependency to get DB session
 def get_db():
@@ -27,7 +41,11 @@ async def root():
 
 # PDF upload endpoint
 @app.post("/upload-pdf/")
-async def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_pdf(
+    file: UploadFile = File(...), 
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id)
+    ):
     # Ensure file is a PDF
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="File must be a PDF.")
@@ -58,7 +76,8 @@ async def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db)
     new_pdf = PDFDocument(
         filename=file.filename,
         upload_date=datetime.utcnow(),
-        content=pdf_text
+        content=pdf_text,
+        user_id=user_id # Associate the PDF with the user
     )
     db.add(new_pdf)
     db.commit()
