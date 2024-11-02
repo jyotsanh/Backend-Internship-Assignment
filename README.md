@@ -11,3 +11,5 @@
     - LangChain or LlamaIndex: Choose based on NLP requirements (for text extraction or further processing).
 
 ## uvicorn main:app --reload
+
+## Backend API is live : https://backend-internship-assignment.onrender.com/

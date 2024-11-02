@@ -38,7 +38,7 @@ async def test_upload_pdf_success():
         with open(pdf_path, "wb") as f:
             f.write(minimal_pdf)
 
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+    async with AsyncClient(app=app, base_url="https://backend-internship-assignment.onrender.com") as client:
         # Open the sample PDF file in binary mode and upload it
         with open(pdf_path, "rb") as pdf_file:
             files = {"file": ("sample.pdf", pdf_file, "application/pdf")}

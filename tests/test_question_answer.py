@@ -25,7 +25,7 @@ test_questions = [
 
 @pytest.mark.asyncio
 async def test_question_answer_websocket():
-    async with connect("ws://127.0.0.1:8000/ws/question-answer?user_id=1") as websocket:
+    async with connect("wss://backend-internship-assignment.onrender.com/ws/question-answer?user_id=1") as websocket:
             responses = []
             for test_cases in test_questions:
                 # Test data for user-specific PDF content (mocked)
