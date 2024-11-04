@@ -19,7 +19,7 @@ async def test_upload_pdf_success():
     Test successful upload of a PDF file
     """
     # Path to a sample PDF file
-    pdf_path = "tests/sample2.pdf"
+    pdf_path = "tests/file.pdf"
     
     # Only create a temporary PDF file if the real one doesn't exist
     if not os.path.exists(pdf_path):
@@ -38,7 +38,7 @@ async def test_upload_pdf_success():
         with open(pdf_path, "wb") as f:
             f.write(minimal_pdf)
 
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+    async with AsyncClient(app=app, base_url="https://backend-internship-assignment.onrender.com") as client:
         # Open the sample PDF file in binary mode and upload it
         with open(pdf_path, "rb") as pdf_file:
             files = {"file": ("sample.pdf", pdf_file, "application/pdf")}
@@ -63,7 +63,7 @@ async def test_upload_unsupported_file_format():
     with open(text_path, "w") as f:
         f.write("This is a test text file.")
 
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+    async with AsyncClient(app=app, base_url="http://test") as client:
         # Open the sample text file and attempt to upload it
         with open(text_path, "rb") as text_file:
             files = {"file": ("sample.txt", text_file, "text/plain")}

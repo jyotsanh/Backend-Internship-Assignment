@@ -1,5 +1,6 @@
 # Import necessary modules from FastAPI for WebSocket handling
 from fastapi import Depends, WebSocket, WebSocketDisconnect, APIRouter
+from langchain.memory import ConversationBufferMemory
 
 from sqlalchemy.orm import Session
 # Import UUID module to generate unique session IDs
@@ -45,9 +46,17 @@ async def question_answer_websocket(
     # Retrieve only the PDFs uploaded by this user
     pdf_content = get_pdf_content_for_user(db,user_id=user_id)
 
-    # Initialize session data with placeholder PDF content
-    sessions[session_id] = {"pdf_content": pdf_content}
 
+    
+    # Initialize session data and memory buffer with placeholder PDF content
+    sessions[session_id] = {
+        "pdf_content": pdf_content[0],
+        "memory": ConversationBufferMemory(
+            memory_key="chat_history", 
+            return_messages=True, 
+            output_key="answer"
+            )
+    }
     try:
         # Infinite loop to handle continuous message exchange
         while True:
@@ -61,15 +70,21 @@ async def question_answer_websocket(
             except json.JSONDecodeError:
                 question = question  # Fallback to raw text if not JSON
             
-            # Passes both the question and the PDF content associated with this session
-            answer = await get_answer_from_model(question, sessions[session_id]["pdf_content"]) # type: ignore
-            
-            # Send the answer back to the client
-            await websocket.send_text(
-                json.dumps({
-                    "type": "answer",
-                    "content": answer
-                }))
+            if question_data["type"] == "question":
+                # Passes both the question and the PDF content associated with this session
+                print("inside if statementas")
+                answer = await get_answer_from_model(
+                        question = question, 
+                        pdf_content = sessions[session_id]["pdf_content"], 
+                        memory = sessions[session_id]["memory"]
+                        ) # type: ignore
+                
+                # Send the answer back to the client
+                await websocket.send_text(
+                    json.dumps({
+                        "type": "answer",
+                        "content": answer
+                    }))
     
     except WebSocketDisconnect:
         # If the client disconnects, clean up by removing their session data

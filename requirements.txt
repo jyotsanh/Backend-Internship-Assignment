@@ -11,3 +11,11 @@ python-multipart
 pytest 
 httpx
 pytest-asyncio
+chromadb
+sentence-transformers
+huggingface-hub
+langchain-community
+pytest-timeout
+langchain_huggingface
+faiss-cpu
+langchain-ollama

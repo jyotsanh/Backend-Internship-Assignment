@@ -10,7 +10,7 @@ import os
 from database.config import SessionLocal
 from database.models import PDFDocument
 
-from websocket.question_answer import router as ws_router
+from websocket.question_answer import router as ws_router # type: ignore
 
 app = FastAPI()
 
@@ -25,7 +25,7 @@ Path(UPLOAD_DIRECTORY).mkdir(exist_ok=True)
 def get_current_user_id():
     # This should be replaced with actual logic to retrieve the authenticated user's ID.
     # e.g., by extracting from an auth token in real scenarios.
-    return 1
+    return 34
 
 # Dependency to get DB session
 def get_db():
@@ -70,7 +70,7 @@ async def upload_pdf(
     # Save the PDF file locally
     file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
     with open(file_path, "wb") as f:
-        f.write(await file.read())
+        f.write(pdf_data)
         
     # Save file metadata and content to the database
     new_pdf = PDFDocument(
