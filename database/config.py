@@ -16,7 +16,6 @@ load_dotenv('.env')
 # The database URL is either the environment variable
 # DATABASE_URL or a default SQLite database
 DATABASE_URL = os.getenv('DATABASE_URL')
-DATABASE_URL = "jhvjv"
 try:
     # Try to create the engine with the DATABASE_URL
     engine = create_engine(DATABASE_URL)
