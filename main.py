@@ -23,9 +23,8 @@ Path(UPLOAD_DIRECTORY).mkdir(exist_ok=True)
 
 
 def get_current_user_id():
-    # This should be replaced with actual logic to retrieve the authenticated user's ID.
-    # e.g., by extracting from an auth token in real scenarios.
-    return 34
+    # [todo]
+    return 101
 
 # Dependency to get DB session
 def get_db():
@@ -53,8 +52,6 @@ async def upload_pdf(
     # Read and extract content from the PDF
     try:
         pdf_data = await file.read()
-        print(f"File size: {len(pdf_data)} bytes")
-        
         if len(pdf_data) == 0:
             raise HTTPException(status_code=400, detail="Uploaded file is empty.")
         
@@ -63,8 +60,6 @@ async def upload_pdf(
         for page in doc:
             pdf_text += page.get_text()
     except Exception as e:
-        print("ooooooooo")
-        print(e)
         raise HTTPException(status_code=500, detail="Error processing PDF file.")
     
     # Save the PDF file locally

@@ -1,12 +1,11 @@
 # Import necessary modules from FastAPI for WebSocket handling
 from fastapi import Depends, WebSocket, WebSocketDisconnect, APIRouter
-from langchain.memory import ConversationBufferMemory
 
 from sqlalchemy.orm import Session
 # Import UUID module to generate unique session IDs
 import uuid
 # Import the function that will process questions using NLP
-from utils.nlp import get_answer_from_model
+from utils.nlp2 import get_answer_from_model
 
 from database.models import get_pdf_content_for_user  # Add this function to fetch user-specific PDF content
 from database.config import SessionLocal
@@ -50,13 +49,9 @@ async def question_answer_websocket(
     
     # Initialize session data and memory buffer with placeholder PDF content
     sessions[session_id] = {
-        "pdf_content": pdf_content[0],
-        "memory": ConversationBufferMemory(
-            memory_key="chat_history", 
-            return_messages=True, 
-            output_key="answer"
-            )
+        "pdf_content": pdf_content[0]
     }
+    
     try:
         # Infinite loop to handle continuous message exchange
         while True:
@@ -65,18 +60,16 @@ async def question_answer_websocket(
             
             try:
                 question_data = json.loads(question)
-                print(f"question_data: {question_data}")
                 question = question_data['content']
             except json.JSONDecodeError:
                 question = question  # Fallback to raw text if not JSON
             
             if question_data["type"] == "question":
                 # Passes both the question and the PDF content associated with this session
-                print("inside if statementas")
                 answer = await get_answer_from_model(
                         question = question, 
-                        pdf_content = sessions[session_id]["pdf_content"], 
-                        memory = sessions[session_id]["memory"]
+                        pdf_content = sessions[session_id]["pdf_content"]
+                    
                         ) # type: ignore
                 
                 # Send the answer back to the client
@@ -91,4 +84,3 @@ async def question_answer_websocket(
         del sessions[session_id]
     except Exception as e:
         print(e)
-        print("Error: ", e)

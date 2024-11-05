@@ -29,22 +29,20 @@ def create_vector_store(pdf_text):
         pdf_text = " ".join(pdf_text)
     # Create a Document object
     doc = Document(page_content=pdf_text, metadata={})
-    print("object made")
     split_docs = text_splitter.split_documents([doc])
-    print("splitted")
     embeddings = HuggingFaceEmbeddings(
         
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     
     docsearch = Chroma.from_documents(split_docs, embedding=embeddings)
-    return docsearch.as_retriever()
+    return docsearch.as_retriever(
+        search_type="similarity_score_threshold",
+        search_kwargs={'score_threshold': 0.8,'k': 3},
+    )
 
 # Set up the LangChain conversational retrieval chain
 def create_qa_chain(retriever, memory):
-    
-    
-    
     repo_id = "mistralai/Mistral-7B-Instruct-v0.2"
 
     llm = HuggingFaceEndpoint(
@@ -134,7 +132,7 @@ async def get_answer_from_model(question, pdf_content, memory):
         # Load PDF content into vector store
         retriever = create_vector_store(pdf_content)
         retrieval_chain = create_qa_chain(retriever, memory)
-        print("nlp first phase")
+        
          # Convert memory to chat history format
         chat_history = []
         if memory:
@@ -144,21 +142,18 @@ async def get_answer_from_model(question, pdf_content, memory):
                     chat_history.append(("human", msg.content))
                 elif isinstance(msg, AIMessage):
                     chat_history.append(("ai", msg.content))
-        print("nlp second phase")
         
         # Generate response using the question and memory context
         response = retrieval_chain.invoke({
                              "input": question,
                              "chat_history": chat_history
                              })
-        print("third phase")
         if response and 'answer' in response:
             # Save the interaction to memory
             memory.save_context(
                 {"question": question},
                 {"answer": response['answer']}
             )
-            print(response)
             return response['answer']
         
         return "I apologize, but I couldn't generate a response. The content might be too long or complex."
@@ -166,6 +161,6 @@ async def get_answer_from_model(question, pdf_content, memory):
         if "max_new_tokens" in str(ve):
             return "The response would be too long. Could you ask a more specific question?"
     except WebSocketDisconnect:
-        print("Client disconnected")
+        return "Client disconnected"
     except Exception as e:
         return f"Error generating response: {str(e)}"

@@ -19,7 +19,7 @@ async def test_upload_pdf_success():
     Test successful upload of a PDF file
     """
     # Path to a sample PDF file
-    pdf_path = "tests/sample2.pdf"
+    pdf_path = "tests/file.pdf"
     
     # Only create a temporary PDF file if the real one doesn't exist
     if not os.path.exists(pdf_path):

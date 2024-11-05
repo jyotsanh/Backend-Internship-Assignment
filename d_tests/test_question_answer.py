@@ -25,12 +25,12 @@ test_questions = [
 
 @pytest.mark.asyncio
 async def test_question_answer_websocket():
-    async with connect("wss://backend-internship-assignment.onrender.com/ws/question-answer?user_id=1") as websocket:
+    async with connect("wss://backend-internship-assignment.onrender.com/ws/question-answer?user_id=34") as websocket:
             responses = []
             for test_cases in test_questions:
                 # Test data for user-specific PDF content (mocked)
                 question = test_cases['question']
-                expected_answer = "Answer to Simple based on PDF content"
+                print("first phase")
                 
                 # Send a question to the WebSocket
                 await websocket.send(
@@ -39,18 +39,21 @@ async def test_question_answer_websocket():
                         "content": question
                     })
                 )
-
+                print("second phase")
                 # Receive the response
                 response = await websocket.recv()
                 response_data = json.loads(response)
-                
+                print(response_data)
                 responses.append(response_data['content'])
+                # Check if response contains actual content or error message
+                assert response_data['type'] == 'answer'
+                assert isinstance(response_data['content'], str)
+                assert len(response_data['content']) > 0
+                assert not response_data['content'].startswith('Error generating response')
                 await asyncio.sleep(0.5)
                 
             # validate responses length
             assert len(responses) == len(test_questions)
-            # Verify the answer is as expected
-            assert expected_answer == response_data['content']
 
 
 # @pytest.mark.asyncio
