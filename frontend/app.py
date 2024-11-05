@@ -38,7 +38,7 @@ def main():
     # Add upload button
     if pdf_file is not None:
         if st.button("Upload PDF"):
-            response = requests.post(f"{local_URL}/upload-pdf/", files={"file": pdf_file})
+            response = requests.post(f"{url}/upload-pdf/", files={"file": pdf_file})
             # Print the response from the server
             if response.status_code == 200:
                 st.write("Successfully completed")
@@ -70,7 +70,7 @@ def main():
                     async def send_message():
                         try:
                             async with websockets.connect(
-                                f"{local_WS_URL}?user_id=101",
+                                f"{WS_URL}?user_id=101",
                                 ping_interval=None,  # Disable ping to prevent timeouts
                                 ping_timeout=None,   # Disable ping timeout
                                 close_timeout=300,   # 5 minutes timeout for closing
