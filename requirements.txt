@@ -17,3 +17,4 @@ pytest-timeout
 groq
 langchain-groq
 langchain_google_genai
+aiofiles
