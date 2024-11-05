@@ -27,4 +27,10 @@ class PDFDocument(Base):
 def get_pdf_content_for_user(db: Session, user_id: int):
     # Fetch content of PDFs associated with this user
     result = db.query(PDFDocument.content).filter(PDFDocument.user_id == user_id).all()
-    return [pdf.content for pdf in result]
+    # Fetch content of the most recent PDF
+    result = (
+        db.query(PDFDocument.content)
+        .order_by(PDFDocument.upload_date.desc())
+        .first()
+    )
+    return result.content if result else None
