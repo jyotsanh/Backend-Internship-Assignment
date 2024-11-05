@@ -41,7 +41,8 @@ def create_vector_store(pdf_text):
 # Set up the LangChain conversational retrieval chain
 def create_qa_chain(retriever):
     
-    llm=ChatGroq(groq_api_key=groq_api_key,
+    llm=ChatGroq(
+            groq_api_key=groq_api_key,
              model_name="Llama3-8b-8192")
 
     prompt = ChatPromptTemplate.from_template(

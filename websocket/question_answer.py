@@ -49,7 +49,7 @@ async def question_answer_websocket(
     
     # Initialize session data and memory buffer with placeholder PDF content
     sessions[session_id] = {
-        "pdf_content": pdf_content[0]
+        "pdf_content": pdf_content
     }
     
     try:
