@@ -6,8 +6,8 @@ import json
 import asyncio
 
 # deployed
-url = 'https://backend-internship-assignment.onrender.com' 
-WS_URL = "wss://backend-internship-assignment.onrender.com/ws/question-answer"
+DEPLOYED_URL = 'https://backend-internship-assignment.onrender.com' 
+DEPLOYED_WSS_URL = "wss://backend-internship-assignment.onrender.com/ws/question-answer"
 
 # local
 local_URL = "http://127.0.0.1:8000"
@@ -38,7 +38,7 @@ def main():
     # Add upload button
     if pdf_file is not None:
         if st.button("Upload PDF"):
-            response = requests.post(f"{local_URL}/upload-pdf/", files={"file": pdf_file})
+            response = requests.post(f"{DEPLOYED_URL}/upload-pdf/", files={"file": pdf_file})
             st.write("Status Code:", response)
             # Print the response from the server
             if response.status_code == 200:
@@ -71,7 +71,7 @@ def main():
                     async def send_message():
                         try:
                             async with websockets.connect(
-                                f"{local_WS_URL}?user_id=102",
+                                f"{DEPLOYED_WSS_URL}?user_id=102",
                                 ping_interval=None,  # Disable ping to prevent timeouts
                                 ping_timeout=None,   # Disable ping timeout
                                 close_timeout=300,   # 5 minutes timeout for closing
