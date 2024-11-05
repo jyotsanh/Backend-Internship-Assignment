@@ -51,7 +51,7 @@ async def test_question_answer_websocket():
                 assert len(response_data['content']) > 0
                 assert not response_data['content'].startswith('Error generating response')
                 await asyncio.sleep(0.5)
-                
+            print(responses)
             # validate responses length
             assert len(responses) == len(test_questions)
 

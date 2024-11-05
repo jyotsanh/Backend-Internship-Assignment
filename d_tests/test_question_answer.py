@@ -10,22 +10,22 @@ from main import app  # Adjust if needed to point to your FastAPI app
 # Test data structure
 test_questions = [
     {
-        "question": "What is the education background?",
+        "question": "summariz this text for me?",
         "expected_length": 10  # Minimum expected answer length
     },
     {
-        "question": "What are the key skills?",
+        "question": "what is theis pdf is about?",
         "expected_length": 10
     },
     {
-        "question": "List the work experience.",
+        "question": "List the proojects mandip has done.",
         "expected_length": 10
     }
 ]
 
 @pytest.mark.asyncio
 async def test_question_answer_websocket():
-    async with connect("wss://backend-internship-assignment.onrender.com/ws/question-answer?user_id=34") as websocket:
+    async with connect("wss://backend-internship-assignment.onrender.com/ws/question-answer?user_id=101") as websocket:
             responses = []
             for test_cases in test_questions:
                 # Test data for user-specific PDF content (mocked)
@@ -51,7 +51,7 @@ async def test_question_answer_websocket():
                 assert len(response_data['content']) > 0
                 assert not response_data['content'].startswith('Error generating response')
                 await asyncio.sleep(0.5)
-                
+            print(responses)
             # validate responses length
             assert len(responses) == len(test_questions)
 
