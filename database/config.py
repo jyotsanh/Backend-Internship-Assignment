@@ -16,6 +16,7 @@ load_dotenv('.env')
 # The database URL is either the environment variable
 # DATABASE_URL or a default SQLite database
 DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = "jhvjv"
 try:
     # Try to create the engine with the DATABASE_URL
     engine = create_engine(DATABASE_URL)
@@ -25,7 +26,7 @@ except Exception as e:
     print(f"Failed to connect to {DATABASE_URL}: {str(e)}")
     print("Falling back to local SQLite database")
     # Fall back to local SQLite database
-    DATABASE_URL = "sqlite:///./Test_Data_Base.db"
+    DATABASE_URL = "sqlite:///./database.db"
     engine = create_engine(DATABASE_URL)
 
 # Create the session maker

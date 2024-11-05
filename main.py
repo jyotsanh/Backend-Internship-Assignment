@@ -24,7 +24,7 @@ Path(UPLOAD_DIRECTORY).mkdir(exist_ok=True)
 
 def get_current_user_id():
     # [todo]
-    return random.randint(100, 500)
+    return random.randint(0, 500)
 
 # Dependency to get DB session
 def get_db():
@@ -61,7 +61,15 @@ async def upload_pdf(
             pdf_text += page.get_text()
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error processing PDF file.")
-    
+    # Check if a PDF with the same filename already exists in the database
+    existing_pdf = db.query(PDFDocument).filter_by(filename=file.filename).first()
+    if existing_pdf:
+        print("this pdf already exist so updating the time")
+        # Update the upload_date if the file already exists
+        existing_pdf.upload_date = datetime.utcnow()
+        db.commit()
+        db.refresh(existing_pdf)
+        return {"message": "PDF uploaded successfully", "id": existing_pdf.id}
     # Save the PDF file locally
     file_path = os.path.join(UPLOAD_DIRECTORY, file.filename)
     with open(file_path, "wb") as f:
