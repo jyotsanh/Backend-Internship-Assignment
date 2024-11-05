@@ -5,41 +5,41 @@ This repository contains the Backend Internship Assignment provided by [@AI Plan
 # Reposritory folder structure :
 This section describes the structure of the **Backend Internship Assignment** repository and the purpose of each folder and file.
 Backend Internship Assignment
-   |--d_tests/
-   |   |--test_pdf_upload.py
-   |   |--test_question_answer.py
-   |
-   |--database/
-   |   |--config.py
-   |   |--models.py
-   |
-   |--frontend/
-   |   |--app.py.py
-   |   |--requirements.py
-   |
-   |--pdf_uploads/
-   |   |--sample.pdf
-   |   |--file.pdf
-   |
-   |--frontend/
-   |   |--app.py.py
-   |   |--requirements.py
-   |
-   |--tests/
-   |   |--test_pdf_upload.py
-   |   |--test_question_answer.py
-   |
-   |--utils/
-   |   |--nlp2.py
-   |
-   |--websocket/
-   |   |--question_answer.py
-   |
-   |--main.py
-   |--pytest.ini
-   |--README.md
-   |--requirements.tx
-   |--vercel.json
+###   |--d_tests/
+###   |   |--test_pdf_upload.py
+###   |   |--test_question_answer.py
+###   |
+###   |--database/
+###   |   |--config.py
+###   |   |--models.py
+###   |
+###   |--frontend/
+###   |   |--app.py.py
+###   |   |--requirements.py
+###   |
+###   |--pdf_uploads/
+###   |   |--sample.pdf
+###   |   |--file.pdf
+###   |
+###   |--frontend/
+###   |   |--app.py.py
+###   |   |--requirements.py
+###   |
+###   |--tests/
+###   |   |--test_pdf_upload.py
+###   |   |--test_question_answer.py
+###   |
+###   |--utils/
+###   |   |--nlp2.py
+###   |
+###  |--websocket/
+###  |   |--question_answer.py
+###  |
+###  |--main.py
+###  |--pytest.ini
+###  |--README.md
+###  |--requirements.tx
+###  |--vercel.json
 
 - **d_tests** :  this folder contains pytest cases for deployed API backend
 - **database** :  this folder database config and PDFDocument models
@@ -66,7 +66,7 @@ To run this API locally, you will need:
 2. **Remote Database (Optional)**:
    - A remote `DATABASE_URL` can be set for database storage; if not provided, a local SQLite database will be created.
 
-## Setup Instructions
+# Setup Instructions
 
 ### 1. Clone the Repository
 ```bash
@@ -101,7 +101,7 @@ There are three primary test cases to verify functionality:
 - File Format Handling: Ensures unsupported formats are properly handled.
 - WebSocket Test: Checks WebSocket connection for three questions and verifies response length
 
-## Required Packages
+# Required Packages
 
 ### Core Libraries
 
@@ -131,9 +131,17 @@ There are three primary test cases to verify functionality:
 - **pytest-timeout**: To set timeouts on test cases.
 - **groq**: For Groq-related operations in question answering.
 
+# Model Choice:
+- Groq llm is used because of it's faster inference speed
+- Google model embedding is used for document vector
+- Chroma Vector db store is used for storing the documents vector
+
 # Deployment
-## Backend API
+## Backend API (render.com)
 The backend API is live and can be accessed at: https://backend-internship-assignment.onrender.com/
 
 ## Frontend API
-The frontend API is live at: [app](https://backend-internship-assignment-1.onrender.com/)
+The frontend API is live at: [link](https://backend-internship-assignment-1.onrender.com/)
+
+
+
