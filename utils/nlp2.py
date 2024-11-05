@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 load_dotenv('.env')
 ## load the GROQ And OpenAI API KEY 
 groq_api_key=os.getenv('GROQ_API_KEY')
+backup_groq_api_key = os.getenv('GROQ_API_KEY_BACKUP')
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 
@@ -35,26 +36,32 @@ def create_vector_store(pdf_text):
     docsearch = Chroma.from_documents(split_docs, embedding=embeddings)
     return docsearch.as_retriever(
         search_type="mmr",
-        search_kwargs={'k': 6, 'lambda_mult': 0.25}
+        search_kwargs={'k': 3, 'lambda_mult': 0.25}
     )
 
 # Set up the LangChain conversational retrieval chain
-def create_qa_chain(retriever):
+def create_qa_chain(retriever,groq_api_key):
     
     llm=ChatGroq(
             groq_api_key=groq_api_key,
              model_name="Llama3-8b-8192")
 
     prompt = ChatPromptTemplate.from_template(
-        """
-        Answer the questions based on the provided context only.
-        Please provide the most accurate response based on the question
-        <context>
-        {context}
-        <context>
-        Question: {input}
-        """
+    """
+    You are a knowledgeable assistant answering questions accurately and concisely.
+    Respond as directly and informatively as possible based only on the information provided below. Avoid phrases like "based on the context" and respond as if you have the answer directly.
+
+    <context>
+    {context}
+    <context>
+    
+    Question: {input}
+    
+    Answer:
+    """
     )
+
+
     document_chain = create_stuff_documents_chain(
         llm, 
         prompt
@@ -66,25 +73,48 @@ def create_qa_chain(retriever):
     return retrieval_chain
 
 async def get_answer_from_model(question, pdf_content):
-    
     try:
-        
-        # Load PDF content into vector store
-        retriever = create_vector_store(pdf_content)
-        retrieval_chain = create_qa_chain(retriever)
- 
-        # Generate response using the question and memory context
-        response = retrieval_chain.invoke({
-                             "input": question,
-                             })
-        if response and 'answer' in response:
-            return response['answer']
-        
-        return "I apologize, but I couldn't generate a response. The content might be too long or complex."
-    except ValueError as ve:
-        if "max_new_tokens" in str(ve):
-            return "The response would be too long. Could you ask a more specific question?"
-    except WebSocketDisconnect:
-        return "Client disconnected"
+    
+        try:
+            
+            # Load PDF content into vector store
+            retriever = create_vector_store(pdf_content)
+            retrieval_chain = create_qa_chain(retriever,groq_api_key)
+    
+            # Generate response using the question and memory context
+            response = retrieval_chain.invoke({
+                                "input": question,
+                                })
+            if response and 'answer' in response:
+                return response['answer']
+            
+            return "I apologize, but I couldn't generate a response. The content might be too long or complex."
+        except ValueError as ve:
+            if "max_new_tokens" in str(ve):
+                return "The response would be too long. Could you ask a more specific question?"
+        except WebSocketDisconnect:
+            return "Client disconnected"
+        except Exception as e:
+            return f"Error generating response: {str(e)}"
     except Exception as e:
-        return f"Error generating response: {str(e)}"
+        try:
+            
+            # Load PDF content into vector store
+            retriever = create_vector_store(pdf_content)
+            retrieval_chain = create_qa_chain(retriever,backup_groq_api_key)
+    
+            # Generate response using the question and memory context
+            response = retrieval_chain.invoke({
+                                "input": question,
+                                })
+            if response and 'answer' in response:
+                return response['answer']
+            
+            return "I apologize, but I couldn't generate a response. The content might be too long or complex."
+        except ValueError as ve:
+            if "max_new_tokens" in str(ve):
+                return "The response would be too long. Could you ask a more specific question?"
+        except WebSocketDisconnect:
+            return "Client disconnected"
+        except Exception as e:
+            return f"Error generating response: {str(e)}"

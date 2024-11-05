@@ -14,13 +14,17 @@ local_URL = "http://127.0.0.1:8000"
 local_WS_URL = "ws://127.0.0.1:8000/ws/question-answer"
 
 with st.sidebar:
-    st.title('PDF Reader')
+    st.title('PDF document Chatbot')
     st.markdown('''
                 ## LLM powered chatbot
+                ## Features
+                - **PDF Upload**: Users can upload PDF documents to be queried.
+                - **Question-Answering**: The backend processes and answers questions about the document content.
+                - **WebSocket Support**: Provides real-time question-response functionality.
                 ''')
     
     add_vertical_space(5)
-    st.write("made for backend assignment project")
+    st.write("Made for backend assignment project")
 
 def main():
     st.header("Chat with your PDF")
@@ -39,7 +43,6 @@ def main():
     if pdf_file is not None:
         if st.button("Upload PDF"):
             response = requests.post(f"{DEPLOYED_URL}/upload-pdf/", files={"file": pdf_file})
-            st.write("Status Code:", response)
             # Print the response from the server
             if response.status_code == 200:
                 st.write("Successfully completed")
